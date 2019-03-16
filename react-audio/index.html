@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,800">
+<div id="container">
+  <div id="hook"></div>
+  <h1>Play Music</h1>
+  <input type="file" id="files" name="files[]" multiple />
+</div>
+<script crossorigin src="https://unpkg.com/react@15/dist/react.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+<script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+<script src="https://soulwire.github.io/sketch.js/js/sketch.min.js"></script>
+<script src="app.js"></script>
+
+<script type="text/babel">
+function PlayButton(props) {
+  const className = props.isMusicPlaying ? 'play active' : 'play';
+  return <a  onClick={props.onClick} href="#" title="Play video" className={className} />;
+}
+
+  class Container extends React.Component {
+    /*Class components can store information about their current situation.
+     This information is called state, which is stored in a JavaScript object.*/
+    /*A constructor method of a React component always needs to call super(props) before anything else.*/
+    constructor(props) {
+    super(props);
+    /*State is way to update our UI based on events.
+    In this tutorial, we will use state to change the play button from 
+    paused to playing based on the user clicking the play button.
+    When the user clicks on the button, the state will update, which will then update the UI.*/
+    this.state = { isMusicPlaying: false };
+  }
+
+/* If you are changing your state based on the old state, you need to do things differently.
+You need to give setState a function, not an object. 
+This function gets the old state as an argument, and returns an object that is the new state.*/
+  handleClick() {
+    if (this.state.isMusicPlaying) {
+    this.audio.pause();
+  } else {
+    this.audio.play();
+  }
+  this.setState(prevState => {
+    return { 
+      isMusicPlaying: !prevState.isMusicPlaying   
+    };
+  });
+};
+
+  render() {
+    // In the render function, this is always referring to the component it is within.
+    let status = this.state.isMusicPlaying 
+    ? 'Playing' 
+    : 'Not playing';
+    return (
+      <div>
+        <h1 onClick={this.handleClick.bind(this)}>{ status }</h1>
+        {/*We give PlayButton a prop called isMusicPlaying, 
+        which is the same as the isMusicPlaying in this.state */}
+        <PlayButton 
+        onClick={this.handleClick.bind(this)}
+        isMusicPlaying={this.state.isMusicPlaying} />
+        <audio id="audio" ref={(audioTag) => { this.audio = audioTag }}/>
+      </div>
+    );
+  }
+}
+
+  const placeWeWantToPutComponent = document.getElementById('hook');
+  ReactDOM.render(<Container />, placeWeWantToPutComponent);
+
+  /*ReactDOM.render(OurFirstComponent(), placeWeWantToPutComponent);
+  We can also write our component in JSX like so:
+  ReactDOM.render(<OurFirstComponent />, placeWeWantToPutComponent);
+  (This is standard — invoke your components like you are writing HTML.)
+  */
+</script>
